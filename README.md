@@ -11,3 +11,29 @@ Read in from stdin. The first line will be the number of instances. For each ins
 same location on the bottom line.
 
 # Sample:
+**Input:**\
+2\
+4\
+1\
+10\
+8\
+6\
+6\
+2\
+5\
+1\
+5\
+9\
+21\
+1\
+5\
+18\
+2\
+4\
+6\
+10\
+1\
+
+**Output:**\
+4\
+7
