@@ -2,42 +2,43 @@ import java.util.*;
 
 public class DivideAndConquer {
     // recursive function to count the number of intersections
-    private static int countIntersections(int[] q, int[] p, int left, int right) {
+    private static int countIntersections(int[] topLinePoints, int[] bottomLinePoints, int left, int right) {
         if (left >= right) {
             return 0; // base case: if subarray has length 0 or 1, return 0
         }
 
         int mid = (left + right) / 2; // divide subarray into two halves
-        int count = countIntersections(q, p, left, mid) + countIntersections(q, p, mid+1, right); // recursively count intersections in both halves
-        int i = left; // index for left subarray
-        int j = mid+1; // index for right subarray
+        // recursively count intersections in both halves
+        int count = countIntersections(topLinePoints, bottomLinePoints, left, mid) + countIntersections(topLinePoints, bottomLinePoints, mid+1, right);
+        int leftIndex = left; // index for left subarray
+        int rightIndex = mid+1; // index for right subarray
         List<Integer> intersections = new ArrayList<>(); // list of intersection points
 
         // merge two sorted subarrays, keeping track of intersection points
-        while (i <= mid && j <= right) {
-            if (p[i] <= p[j]) { // use bottom line points to compare
-                intersections.add(q[i]); // add top line point to list
-                i++;
-            } else {
-                // count intersections with all points to the left in the left subarray
+        while (leftIndex <= mid && rightIndex <= right) {
+            // use bottom line points to compare
+            if (bottomLinePoints[leftIndex] <= bottomLinePoints[rightIndex]) {
+                intersections.add(topLinePoints[leftIndex]); // add top line point to list
+                leftIndex++;
+            } else { // count intersections with all points to the left in the left subarray
                 count += intersections.size(); 
-                j++;
+                rightIndex++;
             }
         }
 
         // add any remaining points from left subarray to intersection list
-        while (i <= mid) {
-            intersections.add(q[i]);
-            i++;
+        while (leftIndex <= mid) {
+            intersections.add(topLinePoints[leftIndex]);
+            leftIndex++;
         }
 
         // any remaining points in the right subarray will have already been counted in the first while loop
-        while (j <= right) {
+        while (rightIndex <= right) {
             count += intersections.size();
-            j++;
+            rightIndex++;
         }
 
-        return count; // return total number of intersections in this subarray
+        return count;
     }
 
     public static void main(String[] args) {
@@ -48,21 +49,26 @@ public class DivideAndConquer {
 
         while (numInstances-- > 0) {
             int n = in.nextInt(); // number of pairs of points
-            int[] q = new int[n]; // top line points
-            int[] p = new int[n]; // bottom line points
+            int[] topLinePoints = new int[n]; // top line points
+            int[] bottomLinePoints = new int[n]; // bottom line points
 
             for (int i = 0; i < n; i++) {
-                q[i] = in.nextInt();
+                topLinePoints[i] = in.nextInt();
             }
 
             for (int i = 0; i < n; i++) {
-                p[i] = in.nextInt();
+                bottomLinePoints[i] = in.nextInt();
             }
 
-            counts[arrIndex] = countIntersections(q, p, 0, n-1); // count intersections using divide-and-conquer
+            // count intersections using divide-and-conquer
+            counts[arrIndex] = countIntersections(topLinePoints, bottomLinePoints, 0, n-1);
             arrIndex++;
         }
         
         in.close();
+
+        for (int i = 0; i < numInstances; i++) {
+            System.out.println(counts[i]);
+        }
     }
 }
